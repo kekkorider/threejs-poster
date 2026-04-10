@@ -20,10 +20,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls'
 
 import { useGSAP } from '@/composables/useGSAP'
 
-import { PlaneMaterial } from '@/assets/materials/PlaneMaterial'
+import { PlaneMaterial, maskTexture } from '@/assets/materials/PlaneMaterial'
+import { textureLoader } from '@/assets/loaders'
 
 const canvasRef = useTemplateRef('canvas')
+
 let perfPanel, scene, camera, renderer, plane, controls
+const textures = new Map()
 
 const { width: windowWidth, height: windowHeight } = useWindowSize()
 const { pixelRatio: dpr } = useDevicePixelRatio()
@@ -40,6 +43,10 @@ onMounted(async () => {
 	createScene()
 	createCamera()
 	await createRenderer()
+
+	await loadTextures()
+
+	maskTexture.value = textures.get('map')
 
 	createPlane()
 
@@ -126,6 +133,12 @@ async function createRenderer() {
 	}
 
 	await renderer.init()
+}
+
+async function loadTextures() {
+	const mask = await textureLoader.load('/mask.png')
+
+	textures.set('map', mask)
 }
 
 function createControls() {

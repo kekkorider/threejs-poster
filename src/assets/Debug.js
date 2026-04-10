@@ -3,7 +3,11 @@ import { Pane } from 'tweakpane'
 import {
   divisions,
   circleSize,
-  grainIntensity
+  grainIntensity,
+  colorA,
+  colorB,
+  colorC,
+  colorD
 } from '@/assets/materials/PlaneMaterial'
 
 const pane = new Pane({
@@ -16,8 +20,52 @@ pane.addBinding(
   {
     label: 'Grain intensity',
     min: 0,
-    max: 2,
+    max: 10,
     step: 0.001
+  }
+)
+
+pane.addBinding(
+  colorA,
+  'value',
+  {
+    label: 'Color A',
+    color: {
+      type: 'float'
+    }
+  }
+)
+
+pane.addBinding(
+  colorB,
+  'value',
+  {
+    label: 'Color B',
+    color: {
+      type: 'float'
+    }
+  }
+)
+
+pane.addBinding(
+  colorC,
+  'value',
+  {
+    label: 'Color C',
+    color: {
+      type: 'float'
+    }
+  }
+)
+
+pane.addBinding(
+  colorD,
+  'value',
+  {
+    label: 'Color D',
+    color: {
+      type: 'float'
+    }
   }
 )
 

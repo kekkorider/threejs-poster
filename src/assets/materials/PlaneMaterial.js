@@ -11,20 +11,28 @@ import {
   time,
   hash,
   smoothstep,
-  color
+  color,
+  texture
 } from 'three/tsl'
-import { MeshBasicNodeMaterial } from 'three/webgpu'
+import { MeshBasicNodeMaterial, DataTexture } from 'three/webgpu'
 import { film } from 'three/addons/tsl/display/FilmNode.js'
 
 import { palette } from '@/assets/tsl-utils'
 
-export const divisions = uniform(8)
+const dummyTexture = new DataTexture(
+  new Uint8Array(1, 0, 0, 1),
+  1,
+  1
+)
+
+export const divisions = uniform(9)
 export const circleSize = uniform(0.4)
-export const colorA = uniform(color(0.5, 0.5, 0.5))
-export const colorB = uniform(color(0.5, 0.5, 0.5))
-export const colorC = uniform(color(1, 1, 0.5))
-export const colorD = uniform(color(0.8, 0.9, 0.3))
+export const colorA = uniform(color(0.75, 0.51, 0.29))
+export const colorB = uniform(color(0.11, 0.57, 0.59))
+export const colorC = uniform(color(0.43, 0.24, 0.86))
+export const colorD = uniform(color(0.71, 0.45, 0.11))
 export const grainIntensity = uniform(1.5)
+export const maskTexture = uniform(dummyTexture)
 
 export const PlaneMaterial = new MeshBasicNodeMaterial()
 PlaneMaterial.name = 'PlaneMaterial'
@@ -90,7 +98,9 @@ PlaneMaterial.colorNode = Fn(() => {
   const col = palette(paletteUV.x.add(time.mul(0.1)), colorA, colorB, colorC, colorD)
 
   col.mulAssign(mask)
-  col.addAssign()
+
+  const tex0 = texture(maskTexture.value, uv())
+col.subAssign(tex0.r)
 
   return film(col, grainIntensity, uv())
 })()
