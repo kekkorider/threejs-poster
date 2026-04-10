@@ -8,15 +8,23 @@ import {
   sub,
   mul,
   select,
-  mod,
   time,
   hash,
-  smoothstep
+  smoothstep,
+  color
 } from 'three/tsl'
 import { MeshBasicNodeMaterial } from 'three/webgpu'
+import { film } from 'three/addons/tsl/display/FilmNode.js'
+
+import { palette } from '@/assets/tsl-utils'
 
 export const divisions = uniform(8)
 export const circleSize = uniform(0.4)
+export const colorA = uniform(color(0.5, 0.5, 0.5))
+export const colorB = uniform(color(0.5, 0.5, 0.5))
+export const colorC = uniform(color(1, 1, 0.5))
+export const colorD = uniform(color(0.8, 0.9, 0.3))
+export const grainIntensity = uniform(1.5)
 
 export const PlaneMaterial = new MeshBasicNodeMaterial()
 PlaneMaterial.name = 'PlaneMaterial'
@@ -57,14 +65,7 @@ const Grid = Fn(() => {
   return st
 })
 
-const Trail = Fn(([p, size, coords]) => {
-  const st = coords.toVar()
-  st.fractAssign()
-
-  return smoothstep(0.25, 0.9, st.y.add(p.y).fract())
-})
-
-PlaneMaterial.colorNode = Fn(() => {
+const Mask = Fn(() => {
   const grid = Grid()
   const circle = Circle(vec2(0.5, 0.5), circleSize, grid)
   const trail = Trail(vec2(0, 0.5), circleSize, grid)
@@ -73,4 +74,23 @@ PlaneMaterial.colorNode = Fn(() => {
   mask.clampAssign(0, 1)
 
   return mask
+})
+
+const Trail = Fn(([p, size, coords]) => {
+  const st = coords.toVar()
+  st.fractAssign()
+
+  return smoothstep(0.25, 0.9, st.y.add(p.y).fract())
+})
+
+PlaneMaterial.colorNode = Fn(() => {
+  const mask = Mask()
+
+  const paletteUV = uv().x.mul(divisions).floor().div(divisions)
+  const col = palette(paletteUV.x.add(time.mul(0.1)), colorA, colorB, colorC, colorD)
+
+  col.mulAssign(mask)
+  col.addAssign()
+
+  return film(col, grainIntensity, uv())
 })()

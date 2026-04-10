@@ -2,7 +2,8 @@ import { Pane } from 'tweakpane'
 
 import {
   divisions,
-  circleSize
+  circleSize,
+  grainIntensity
 } from '@/assets/materials/PlaneMaterial'
 
 const pane = new Pane({
@@ -10,23 +11,34 @@ const pane = new Pane({
 })
 
 pane.addBinding(
-  divisions,
+  grainIntensity,
   'value',
   {
-    label: 'Divisions',
-    min: 3,
-    max: 10,
-    step: 1
-  }
-)
-
-pane.addBinding(
-  circleSize,
-  'value',
-  {
-    label: 'Circle size',
-    min: 0.05,
-    max: 0.4,
+    label: 'Grain intensity',
+    min: 0,
+    max: 2,
     step: 0.001
   }
 )
+
+// pane.addBinding(
+//   divisions,
+//   'value',
+//   {
+//     label: 'Divisions',
+//     min: 3,
+//     max: 10,
+//     step: 1
+//   }
+// )
+
+// pane.addBinding(
+//   circleSize,
+//   'value',
+//   {
+//     label: 'Circle size',
+//     min: 0.05,
+//     max: 0.4,
+//     step: 0.001
+//   }
+// )
