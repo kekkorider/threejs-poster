@@ -14,7 +14,7 @@ pane.addBinding(
   'value',
   {
     label: 'Divisions',
-    min: 1,
+    min: 3,
     max: 10,
     step: 1
   }
@@ -26,7 +26,7 @@ pane.addBinding(
   {
     label: 'Circle size',
     min: 0.05,
-    max: 0.3,
+    max: 0.4,
     step: 0.001
   }
 )
