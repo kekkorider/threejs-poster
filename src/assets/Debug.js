@@ -1,9 +1,32 @@
 import { Pane } from 'tweakpane'
 
-import { scale } from '@/assets/materials/SampleTSLMaterial'
+import {
+  divisions,
+  circleSize
+} from '@/assets/materials/PlaneMaterial'
 
 const pane = new Pane({
   container: document.getElementById('tweakpane-container'),
 })
 
-pane.addBinding(scale, 'value', { label: 'Mesh scale', min: 0.25, max: 1.5, step: 0.01 })
+pane.addBinding(
+  divisions,
+  'value',
+  {
+    label: 'Divisions',
+    min: 1,
+    max: 10,
+    step: 1
+  }
+)
+
+pane.addBinding(
+  circleSize,
+  'value',
+  {
+    label: 'Circle size',
+    min: 0.05,
+    max: 0.3,
+    step: 0.001
+  }
+)

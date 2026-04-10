@@ -19,11 +19,11 @@ import * as THREE from 'three/webgpu'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 
 import { useGSAP } from '@/composables/useGSAP'
-import { SampleTSLMaterial } from '@/assets/materials'
-import { gltfLoader } from '@/assets/loaders'
+
+import { PlaneMaterial } from '@/assets/materials/PlaneMaterial'
 
 const canvasRef = useTemplateRef('canvas')
-let perfPanel, scene, camera, renderer, mesh, controls
+let perfPanel, scene, camera, renderer, plane, controls
 
 const { width: windowWidth, height: windowHeight } = useWindowSize()
 const { pixelRatio: dpr } = useDevicePixelRatio()
@@ -41,11 +41,9 @@ onMounted(async () => {
 	createCamera()
 	await createRenderer()
 
-	createMesh()
+	createPlane()
 
-	await loadModel()
-
-	createControls()
+	// createControls()
 
 	gsap.ticker.fps(60)
 
@@ -93,7 +91,6 @@ watch([windowWidth, windowHeight], value => {
 //
 function updateScene(time = 0) {
 	controls?.update()
-	mesh.rotation.set(time * 0.2, time * 0.13, time * 0.17)
 }
 
 function createScene() {
@@ -105,10 +102,10 @@ function createCamera() {
 		40,
 		get(windowWidth) / get(windowHeight),
 		0.1,
-		100,
+		10,
 	)
 
-	camera.position.set(0, 0, 4)
+	camera.position.set(0, 0, 2)
 }
 
 async function createRenderer() {
@@ -131,29 +128,17 @@ async function createRenderer() {
 	await renderer.init()
 }
 
-async function loadModel() {
-	const gltf = await gltfLoader.load('/monkey.glb')
-	const model = gltf.scene.getObjectByName('Suzanne')
-
-	model.material = SampleTSLMaterial
-	model.position.x = 1
-
-	scene.add(model)
-}
-
 function createControls() {
 	controls = new OrbitControls(camera, renderer.domElement)
 	controls.enableDamping = true
 }
 
-function createMesh() {
-	const geometry = new THREE.BoxGeometry()
-	const material = SampleTSLMaterial
+function createPlane() {
+	const geometry = new THREE.PlaneGeometry(1, 1.25)
 
-	mesh = new THREE.Mesh(geometry, material)
-	mesh.position.x = -1
+	plane = new THREE.Mesh(geometry, PlaneMaterial)
 
-	scene.add(mesh)
+	scene.add(plane)
 }
 </script>
 
